@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head">
+    <title>Returning JSON from ASMX, and handling it correctly in Javascript</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>-->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/json2.js"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+        jQuery(document).ready(function () {
+            $("#button1").click(function(event) {
+                var myData = { IdMember: "2" };
+                var encoded = JSON.stringify(myData); //$.toJSON(myData);
+                alert(encoded);
+                
+                $.ajax({
+                     type: "POST",
+                     url: "http://net4uae.com/masaood/WSMember.asmx/GetMember",
+                     data: encoded,
+                     crossDomain: true,
+                     contentType: "application/json; charset=utf-8",
+                     dataType: "json",
+                     success: function(msg) {
+                         alert("First name: '" + msg.d.FirstName + "', Surname: '" + msg.d.Surname + "'");
+                     },
+                     error: function(msg) {
+                         alert(msg.d);
+                     }
+                 });
+             });
+        });
+    //]]>
+    </script>
+</head>
+
+<body>
+    <input id="button1" type="button" value="call TestMethod" />
+</body>
+</html>

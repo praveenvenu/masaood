@@ -1,0 +1,948 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <script src="scripts/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="scripts/jquery.mobile-1.3.1.min.js" type="text/javascript"></script>
+    <script src="scripts/jquery.tmpl.js" type="text/javascript"></script>
+    <script src="scripts/iscroll-lite.js" type="text/javascript"></script>
+    <link href="css/jquery.mobile-1.3.1.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/mobile.css" rel="stylesheet" type="text/css" />
+     
+
+    <script type="text/javascript">
+
+//        $(document).bind("mobileinit", function (event) {
+//            $.extend($.mobile.zoom, { locked: true, enabled: false });
+        //        });
+
+        $(document).bind("mobileinit", function () {
+            $.mobile.defaultPageTransition = 'none';
+            $.mobile.useFastClick = false;
+        });
+
+        var activeBrand = "infiniti";
+        var carobj;
+        var locobj;
+        var promoobj;
+        var myScroll;
+
+        
+        $(function () {
+
+            $("#divinfiniti").click(function () {
+                changeHomeImage('infiniti');
+                $('#infiniti_logo').attr("src", "images/homeon_infiniti.png");
+                $('#nissan_logo').attr("src", "images/homeof_nissan.png");
+                $('#renault_logo').attr("src", "images/homeof_renault.png");
+
+            });
+
+            $("#divnissan").click(function () {
+                changeHomeImage('nissan');
+                $('#infiniti_logo').attr("src", "images/homeof_infiniti.png");
+                $('#nissan_logo').attr("src", "images/homeon_nissan.png");
+                $('#renault_logo').attr("src", "images/homeof_renault.png");
+            });
+
+            $("#divrenault").click(function () {
+                changeHomeImage('renault');
+                $('#infiniti_logo').attr("src", "images/homeof_infiniti.png");
+                $('#nissan_logo').attr("src", "images/homeof_nissan.png");
+                $('#renault_logo').attr("src", "images/homeon_renault.png");
+            });
+
+
+            $(".carlist-li").live('click', function () {
+
+                var id = $(this).attr("id");
+
+                var obj = getObjects(carobj, 'carid', id);
+
+
+                $("#selCar").text(obj[0].carname);
+                $("#spBStyle").text(obj[0].bodystyle);
+                $("#spSize").text(obj[0].csize);
+                $("#spSegment").text(obj[0].marketsegment);
+                $("#spFuel").text(obj[0].fueltype);
+                $("#spEngineType").text(obj[0].bodystyle);
+                $("#spWeight").text(obj[0].weight);
+                $("#spMileage").text(obj[0].milage);
+                $("#spMaxSpeed").text(obj[0].maxspeed);
+                // $("#spExt").text(obj[0].extcolors);
+                $("#spInt").text(obj[0].intcolors);
+
+
+
+                $.mobile.changePage("#newcardetails", { transition: "none" });
+
+            });
+
+            $(".promolist-li").live('click', function () {
+
+                var id = $(this).attr("id");
+
+                var obj = getObjects(promoobj, 'promoid', id);
+
+                $("#spPromoName").text(obj[0].promoname);
+                $("#spDescription").text(obj[0].description); 
+
+                $.mobile.changePage("#campaigndetails", { transition: "none" });
+
+            });
+
+              $("#locback").live('click', function () {
+
+                  $.mobile.changePage("#locations", { transition: "none" });
+
+              });
+
+
+              $(".loclist-li").live('click', function () {
+
+                var id = $(this).attr("id");
+
+                var obj = getObjects(locobj, 'locid', id);
+
+
+                $("#spLocTitle").text(obj[0].locdispname);
+                $("#spTiming").text(obj[0].timing);
+                $("#spPhone").text(obj[0].tel);
+                $("#spEmail").html(obj[0].email);
+                $("#spIncharge").text(obj[0].incharge_desig);
+
+
+
+                $.mobile.changePage("#locationdetails", { transition: "none" });
+
+            });
+
+//              $(document).on('pageinit', '[data-role=page]', function () {
+//                  $('[data-position=fixed]').fixedtoolbar({ tapToggle: false });
+//              });
+
+
+
+              loadCars(activeBrand);
+              loadcampaigns(activeBrand);
+              loadlocations();
+
+
+        });
+       
+
+        function changeHomeImage(brand) {
+
+            activeBrand = brand;
+
+//            $("#home").animate({ opacity: 0 }, 'fast', function () {
+//                $(this).css({ 'background-image': 'url(images/home_' + brand + '.png)' }).animate({ opacity: 1 });
+//            });
+
+
+            $("#home").fadeTo('slow', 0.5, function () {
+                $(this).css({ 'background-image': 'url(images/home_' + brand + '.png)' }).animate({ opacity: 1 });
+            });
+
+//            $('#home').css('background-image', 'url(images/home_' + brand + '.png)');
+
+
+             $('#newCars').css('background-image', 'url(images/newcars_' + brand + '.png)');
+             $('#newcardetails').css('background-image', 'url(images/newcardetails_' + brand + '.png)');
+             $('#enquiry').css('background-image', 'url(images/enquiry_' + brand + '.png)');
+             $('#campaign').css('background-image', 'url(images/campaigns_' + brand + '.png)');
+             $('#campaigndetails').css('background-image', 'url(images/campaigndetails_' + brand + '.png)');
+             $('#locations').css('background-image', 'url(images/locations_' + brand + '.png)');
+             $('#locationdetails').css('background-image', 'url(images/locationdetails_' + brand + '.png)');
+             $('#services').css('background-image', 'url(images/services_' + brand + '.png)');
+             $('#feedback').css('background-image', 'url(images/feedback_' + brand + '.png)');
+
+
+             $('#newcars_logo').attr("src", "images/" + brand + "_logo.png");
+             $('#newcardetails_logo').attr("src", "images/" + brand + "_logo.png");
+             $('#enquiry_logo').attr("src", "images/" + brand + "_logo.png");          
+             $('#campaigns_logo').attr("src", "images/" + brand + "_logo.png");
+             $('#campaigndetails_logo').attr("src", "images/" + brand + "_logo.png");
+             $('#locations_logo').attr("src", "images/" + brand + "_logo.png");
+             $('#locationdetails_logo').attr("src", "images/" + brand + "_logo.png");
+             $('#services_logo').attr("src", "images/" + brand + "_logo.png");
+             $('#feedback_logo').attr("src", "images/" + brand + "_logo.png");
+
+
+
+            //$("#home").animate({ backgroundImage: "url('images/home_'" + brand + "'.png')" }, 2000);
+
+             // $('#home').css('background-image', 'url(images/home_' + brand + '.png)');
+
+             loadCars(brand);
+             loadcampaigns(brand);
+
+         }
+
+
+         function loadCars(_brand) {
+
+             var myData = { brand: _brand };
+             var encoded = JSON.stringify(myData); //$.toJSON(myData);
+
+            //net4uae.com/masaood/automobile.asmx/AllCars
+
+
+             $.ajax({
+                 beforeSend: function () { $.mobile.showPageLoadingMsg(); },
+                 type: "POST",
+                 url: "http://net4uae.com/masaood/automobile.asmx/AllCars",
+                 data: encoded,
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 error: function (xhr, status, error) {
+                     alert('No able to connect with the server');
+                 },
+                 success: function (cars) {
+
+                     carobj = cars.d;
+
+                     var car = $.map(cars.d, function (obj, index) {
+                         return {
+                             carname: obj.carname,
+                             enginetype: obj.enginetype,
+                             imgSource: obj.image,
+                             bstyle: obj.bodystyle,
+                             carid: obj.carid
+
+                         };
+                     });
+
+
+                     $("#carlist").empty();
+
+                     $('#cars').tmpl(car).appendTo('#carlist');
+
+                     $.mobile.hidePageLoadingMsg();
+
+                 }
+             });
+
+         }
+
+         function loadlocations() {
+
+            //net4uae.com/masaood/automobile.asmx/AllCars
+
+
+             $.ajax({
+                 beforeSend: function () { $.mobile.showPageLoadingMsg(); },
+                 type: "POST",
+                 url: "http://net4uae.com/masaood/automobile.asmx/AllLocations",
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 error: function (xhr, status, error) {
+                     alert('No able to connect with the server');
+                 },
+                 success: function (address) {
+
+                     locobj = address.d;
+
+                     var addresses = $.map(address.d, function (obj, index) {
+                         return {
+                             locdispname: obj.locdispname,
+                             timing: obj.timing,
+                             tel: obj.tel,
+                             fax: obj.fax,
+                             email: obj.email,
+                             incharge_desig: obj.incharge_desig,
+                             locid: obj.locid
+                         };
+
+                     });
+
+                     $("#loclist").empty();
+
+                     $('#loc').tmpl(addresses).appendTo('#loclist');
+
+                     //myScroll = new iScroll('wrapper', { vScrollbar: false });                   
+
+                     $.mobile.hidePageLoadingMsg();
+
+                 }
+             });
+
+         }
+
+
+         function loadcampaigns(_brand) {
+
+             var myData = { brand: _brand };
+             var encoded = JSON.stringify(myData); //$.toJSON(myData);
+
+             //net4uae.com/masaood/automobile.asmx/AllCars
+
+
+             $.ajax({
+                 beforeSend: function () { $.mobile.showPageLoadingMsg(); },
+                 type: "POST",
+                 data: encoded,
+                 url: "http://net4uae.com/masaood/automobile.asmx/AllPromos",
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 error: function (xhr, status, error) {
+                     alert('No able to connect with the server');
+                 },
+                 success: function (promos) {
+
+                     promoobj = promos.d;
+
+                     var campaigns = $.map(promos.d, function (obj, index) {
+                         return {
+                             promoname: obj.promoname,
+                             promoid: obj.promoid,
+                             description: obj.description,
+                             imgSource: obj.image
+                         };
+
+                     });
+
+                     $("#promolist").empty();
+
+                     $('#promotions').tmpl(campaigns).appendTo('#promolist');
+
+                     //myScroll = new iScroll('wrapper', { vScrollbar: false });                   
+
+                     $.mobile.hidePageLoadingMsg();
+
+                 }
+             });
+
+         }
+
+         function getObjects(obj, key, val) {
+             var objects = [];
+             for (var i in obj) {
+                 if (!obj.hasOwnProperty(i)) continue;
+                 if (typeof obj[i] == 'object') {
+                     objects = objects.concat(getObjects(obj[i], key, val));
+                 } else if (i == key && obj[key] == val) {
+                     objects.push(obj);
+                 }
+             }
+             return objects;
+         }
+
+
+         function loaded() {
+
+             myScroll = new iScroll('wrapper', { vScrollbar: false });
+         }
+
+
+       
+
+    </script>
+
+</head>
+<body style="margin:0" >
+    <form id="form1" runat="server">   
+
+    <!-- Templates -->
+
+     <script id="cars" type="text/x-jquery-tmpl">
+         <li class="carlist-li" id="${carid}">
+            <img class="carlist-img" src="data:image/jpeg;base64,${imgSource}" alt="${carname}" />
+            <span class="carHead"> <b>${carname}</b> </span>
+            <span class="carsub">${enginetype} </span> 
+            <span class="carsub">${bstyle} </span>
+            <img src="images/arrow.png" class="arrow" />          
+         </li>
+      </script>
+
+      <script id="promotions" type="text/x-jquery-tmpl">
+         <li class="promolist-li" id="${promoid}">
+            <img class="carlist-img" src="data:image/jpeg;base64,${imgSource}" alt="${promoname}" />
+            <span class="carHead"> <b>${promoname}</b> </span>
+            <span class="carsub">${description} </span>          
+            <img src="images/arrow.png" class="arrow" />          
+         </li>
+      </script>
+
+      <script id="loc" type="text/x-jquery-tmpl">
+         <li class="loclist-li" id="${locid}">
+            <span class="loctitle">${locdispname}</span>
+            <img src="images/small_arrow.png" class="arrow_small" />          
+         </li>
+      </script>
+
+
+    <!-- End Templates -->
+
+     <!-- Start Home Page -->
+
+    <div data-role="page" id="home" style="background-image:url('images/home_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+       <div data-role="header" data-position="fixed" data-theme="comp-header">
+            <p class="title"></p>
+        </div>
+        <!-- /header -->
+        <div data-role="content" class="contentHomePad">
+        <div id="divinfiniti" class="homeIconFirst">
+            <img id="infiniti_logo" src="images/homeon_infiniti.png" style="width:100%;padding-top:20px;padding-left:5px" alt=""   />
+        </div>
+         <div id="divnissan" class="homeIcon">
+            <img id="nissan_logo" src="images/homeof_nissan.png"  style="width:100%;padding-top:20px;padding-left:5px" alt=""  />
+        </div>
+         <div id="divrenault" class="homeIcon">
+            <img id="renault_logo" src="images/homeof_renault.png" style="width:100%;padding-top:20px;padding-left:5px" alt=""   />
+        </div>
+       
+        </div>
+        <!-- /content -->
+        <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">
+         <div data-role="navbar" data-iconpos="bottom" class="my-navbar">           
+                <ul style="list-style:none;padding:5px!important;margin-top:0px!important">
+                    <li class="ui-block-a"><a href="#"><img src="images/home_active_icon.png" border="0" /></a></li>
+                    <li class="ui-block-b"><a href="#newCars" data-transition="none"><img src="images/newcars_icon.png" border="0" /></a></li>
+                    <li class="ui-block-c"><a href="#campaign" data-transition="none"><img src="images/campaigns_icon.png" border="0" /></a></li>
+                    <li class="ui-block-d"><a href="#locations" data-transition="none"><img src="images/location_icon.png" border="0" /></a></li>
+                    <li class="ui-block-e"><a href="#services" data-transition="none"><img src="images/services_icon.png" border="0" /></a></li>
+                    <li class="ui-block-f"><a href="#feedback" data-transition="none"><img src="images/feedback_icon.png" border="0" /></a></li>
+                </ul>   
+            </div>        
+        </div>
+        <!-- /footer -->
+    </div>
+
+     <!-- End Home Page -->
+
+     <!-- Start New Cars -->
+
+    <div data-role="page" id="newCars" style="background-image:url('images/newcars_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+        <div data-role="header" data-position="fixed" data-theme="comp-header">
+            <div style="float: left; width: 20%">
+                <img id="newcars_logo" src="images/infiniti_logo.png" style="width:75%;padding-left:5px;padding-top:5px" /></div>
+            <div style="float: right; width: 50%">
+                <img src="images/almasaood_logo.png" style="width:100%;padding-top:10px" /></div>
+        </div>
+        <!-- /header -->       
+      
+        <div data-role="content">         
+            <ul id="carlist"></ul>
+        </div>
+
+         <!-- /content -->
+        
+        <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">       
+        <div data-role="navbar" data-iconpos="bottom" class="my-navbar">  
+            <ul style="list-style: none; padding: 5px!important; margin-top: 0px!important">
+                <li class="ui-block-a"><a href="#home" data-transition="none">
+                    <img src="images/home_icon.png" border="0" /></a></li>
+                <li class="ui-block-b"><a href="#" >
+                    <img src="images/newcars_active_icon.png" border="0" /></a></li>
+                <li class="ui-block-c"><a href="#campaign" data-transition="none">
+                    <img src="images/campaigns_icon.png" border="0" /></a></li>
+                <li class="ui-block-d"><a href="#locations" data-transition="none">
+                    <img src="images/location_icon.png" border="0" /></a></li>
+                <li class="ui-block-e"><a href="#services" data-transition="none">
+                    <img src="images/services_icon.png" border="0" /></a></li>
+                <li class="ui-block-f"><a href="#feedback" data-transition="none">
+                    <img src="images/feedback_icon.png" border="0" /></a></li>
+            </ul>
+        </div>
+        </div>
+        <!-- /footer -->
+    </div>
+
+    <!-- End New Cars Page -->
+
+     <!-- Start New Car Details -->
+
+    <div data-role="page" id="newcardetails" style="background-image:url('images/newcardetails_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+        <div data-role="header" data-position="fixed" data-theme="comp-header">
+            <div style="float: left; width: 20%">
+                <img id="newcardetails_logo" src="images/infiniti_logo.png" style="width:75%;padding-left:5px;padding-top:5px" /></div>
+            <div style="float: right; width: 50%">
+                <img src="images/almasaood_logo.png" style="width:100%;padding-top:10px" /></div>
+        </div>
+        <!-- /header -->       
+      
+        <div data-role="content">
+        
+            <table cellspacing="2" style="margin-top:30%;width:99%;padding:10px;color:white;text-shadow:none;table-layout:fixed;background: rgba(0, 0, 0, 0.6);">
+                <tr>
+                    <td colspan="2"  style="background: rgba(63, 62, 60, 0.6);padding:5px;">
+                        Basic Details
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="background: rgba(63, 62, 60, 0.6);padding:5px;">
+                        Informations for <span id="selCar"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="background: rgba(63, 62, 60, 0.6);padding:5px;">
+                        Specifications
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                       &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                <td class="feature" style="width:30%">Body Style :</td><td  style="width:70%"><span class="feature" id="spBStyle"></span></td>
+                </tr>
+                <tr>
+                <td class="feature">Size :</td><td><span class="feature" id="spSize"></span></td>
+                </tr>
+                <tr>
+                <td class="feature">Segment :</td><td><span class="feature" id="spSegment"></span></td>
+                </tr>
+                <tr>
+                <td class="feature">Fuel Type :</td><td><span class="feature" id="spFuel"></span></td>
+                </tr>
+                <tr>
+                <td class="feature">Engine Type :</td><td><span class="feature" id="spEngineType"></span></td>
+                </tr>
+                <tr>
+                <td class="feature">Weight :</td><td><span class="feature" id="spWeight"></span></td>
+                </tr>
+                <tr>
+                <td class="feature">Mileage :</td><td><span class="feature" id="spMileage"></span></td>
+                </tr>
+                <tr>
+                <td class="feature">Max Speed :</td><td><span class="feature" id="spMaxSpeed"></span></td>
+                </tr>
+                 <tr>
+                    <td colspan="2">
+                    </td>
+                </tr>
+                <tr>
+                <td class="feature">Ext. Colours :</td><td><span class="feature" id="spExt"></span></td>
+                </tr>
+                <tr>
+                <td class="feature">Int. Colours :</td><td><span class="feature" id="spInt"></span></td>
+                </tr>
+                 <tr>
+                    <td colspan="2" >
+                    <a class="submit_btn" style="float:right;text-decoration:none;color:white;" href="#enquiry" data-transition="none">Submit Enquiry</a>                   
+                    </td>
+                </tr>
+            </table>
+            
+        </div>
+         <!-- /content -->
+        
+        <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">       
+        <div data-role="navbar" data-iconpos="bottom" class="my-navbar">  
+            <ul style="list-style: none; padding: 5px!important; margin-top: 0px!important">
+                <li class="ui-block-a"><a href="#home" data-transition="none">
+                    <img src="images/home_icon.png" border="0" /></a></li>
+                <li class="ui-block-b"><a href="#newCars" data-transition="none" >
+                    <img src="images/newcars_active_icon.png" border="0" /></a></li>
+                <li class="ui-block-c"><a href="#campaign" data-transition="none">
+                    <img src="images/campaigns_icon.png" border="0" /></a></li>
+                <li class="ui-block-d"><a href="#locations" data-transition="none">
+                    <img src="images/location_icon.png" border="0" /></a></li>
+                <li class="ui-block-e"><a href="#services" data-transition="none">
+                    <img src="images/services_icon.png" border="0" /></a></li>
+                <li class="ui-block-f"><a href="#feedback" data-transition="none">
+                    <img src="images/feedback_icon.png" border="0" /></a></li>
+            </ul>
+        </div>
+        </div>
+        <!-- /footer -->
+    </div>
+
+    <!-- End New Car Details Page -->
+
+    <!-- Start Enquiry -->
+
+    <div data-role="page" id="enquiry" style="background-image:url('images/enquiry_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+        <div data-role="header" data-position="fixed" data-theme="comp-header">
+            <div style="float: left; width: 20%">
+                <img id="enquiry_logo" src="images/infiniti_logo.png" style="width:75%;padding-left:5px;padding-top:5px" /></div>
+            <div style="float: right; width: 50%">
+                <img src="images/almasaood_logo.png" style="width:100%;padding-top:10px" /></div>
+        </div>
+        <!-- /header -->       
+      
+        <div data-role="content">         
+            <ul id="Ul1"></ul>
+        </div>
+
+         <!-- /content -->
+        
+        <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">       
+        <div data-role="navbar" data-iconpos="bottom" class="my-navbar">  
+            <ul style="list-style: none; padding: 5px!important; margin-top: 0px!important">
+                <li class="ui-block-a"><a href="#home" data-transition="none">
+                    <img src="images/home_icon.png" border="0" /></a></li>
+                <li class="ui-block-b"><a href="#newCars" data-transition="none" >
+                    <img src="images/newcars_active_icon.png" border="0" /></a></li>
+                <li class="ui-block-c"><a href="#campaign" data-transition="none">
+                    <img src="images/campaigns_icon.png" border="0" /></a></li>
+                <li class="ui-block-d"><a href="#locations" data-transition="none">
+                    <img src="images/location_icon.png" border="0" /></a></li>
+                <li class="ui-block-e"><a href="#services" data-transition="none">
+                    <img src="images/services_icon.png" border="0" /></a></li>
+                <li class="ui-block-f"><a href="#feedback" data-transition="none">
+                    <img src="images/feedback_icon.png" border="0" /></a></li>
+            </ul>
+        </div>
+        </div>
+        <!-- /footer -->
+    </div>
+
+    <!-- End Enquiry Page -->
+
+    
+    <!-- Start Campaign Page -->
+
+
+    <div data-role="page" id="campaign" style="background-image:url('images/campaigns_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+        <div data-role="header" data-position="fixed" data-theme="comp-header">
+           <div style="float: left; width: 20%">
+                <img id="campaigns_logo" src="images/infiniti_logo.png" style="width:75%;padding-left:5px;padding-top:5px" /></div>
+            <div style="float: right; width: 50%">
+                <img src="images/almasaood_logo.png" style="width:100%;padding-top:10px" /></div>
+        </div>
+        <!-- /header -->
+        <div data-role="content" class="contentPad">
+            <table style="color:white;height:100%">
+            <tr>
+            <td style="height:120px">&nbsp;</td>
+            </tr>
+             <tr>
+            <td style="text-shadow:none"><b>Active Campaigns</b></td>
+            </tr>
+            </table>
+            <ul id="promolist"></ul>                   
+            
+        </div>           
+        
+         <!-- /content -->
+        <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">
+         <div data-role="navbar" data-iconpos="bottom" class="my-navbar">           
+                <ul style="list-style:none;padding:5px!important;margin-top:0px!important">
+                    <li class="ui-block-a"><a href="#home" data-transition="none"><img src="images/home_icon.png" border="0" /></a></li>
+                    <li class="ui-block-b"><a href="#newCars" data-transition="none"><img src="images/newcars_icon.png" border="0" /></a></li>
+                    <li class="ui-block-c"><a href="#"><img src="images/campaigns_active_icon.png" border="0" /></a></li>
+                    <li class="ui-block-d"><a href="#locations" data-transition="none"><img src="images/location_icon.png" border="0" /></a></li>
+                    <li class="ui-block-e"><a href="#services" data-transition="none"><img src="images/services_icon.png" border="0" /></a></li>
+                    <li class="ui-block-f"><a href="#feedback" data-transition="none"><img src="images/feedback_icon.png" border="0" /></a></li>
+                </ul>   
+            </div>       
+        </div>
+        <!-- /footer -->
+    </div>
+
+    <!-- End Campaign Page -->
+
+    <!-- Start Campaign Details Page -->
+
+
+    <div data-role="page" id="campaigndetails" style="background-image:url('images/campaigndetails_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+        <div data-role="header" data-position="fixed" data-theme="comp-header">
+           <div style="float: left; width: 20%">
+                <img id="campaigndetails_logo" src="images/infiniti_logo.png" style="width:75%;padding-left:5px;padding-top:5px" /></div>
+            <div style="float: right; width: 50%">
+                <img src="images/almasaood_logo.png" style="width:100%;padding-top:10px" /></div>
+        </div>
+        <!-- /header -->
+        <div data-role="content" class="contentPad">
+            <table style="color:white;width:100%">
+            <tr>
+            <td style="height:120px">&nbsp;</td>
+            </tr>
+             <tr>
+            <td><span style="text-shadow:none" id="spPromoName" /></td>
+            </tr>
+             <tr>
+            <td><span style="text-shadow:none" id="spDescription" /></td>
+            </tr>
+             <tr>
+            <td>&nbsp;</td>
+            </tr>
+               <tr>
+            <td>
+            <ul class="campaignlist">
+            <li class="campaignlist-li"><span style="float:left;width:85%;"><a href="#campaign" style="text-decoration:none;text-shadow:none;color:white" data-transition="none">View All Campaigns</a></span><img class="arrow_small" src="images/small_arrow.png" /></li>
+            <li class="campaignlist-li"><span style="float:left;width:85%;"><a href="#feedback"  style="text-decoration:none;text-shadow:none;color:white" data-transition="none">Submit Feedback</a></span><img class="arrow_small" src="images/small_arrow.png" /></li>
+            </ul>
+            </td>
+            </tr>
+            </table>                          
+            
+        </div>           
+        
+         <!-- /content -->
+        <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">
+         <div data-role="navbar" data-iconpos="bottom" class="my-navbar">           
+                <ul style="list-style:none;padding:5px!important;margin-top:0px!important">
+                    <li class="ui-block-a"><a href="#home" data-transition="none"><img src="images/home_icon.png" border="0" /></a></li>
+                    <li class="ui-block-b"><a href="#newCars" data-transition="none"><img src="images/newcars_icon.png" border="0" /></a></li>
+                    <li class="ui-block-c"><a href="#"><img src="images/campaigns_active_icon.png" border="0" /></a></li>
+                    <li class="ui-block-d"><a href="#locations" data-transition="none"><img src="images/location_icon.png" border="0" /></a></li>
+                    <li class="ui-block-e"><a href="#services" data-transition="none"><img src="images/services_icon.png" border="0" /></a></li>
+                    <li class="ui-block-f"><a href="#feedback" data-transition="none"><img src="images/feedback_icon.png" border="0" /></a></li>
+                </ul>   
+            </div>       
+        </div>
+        <!-- /footer -->
+    </div>
+
+    <!-- End Campaign Page -->
+
+    <!-- Start Ama Locations Page  -->
+
+    <div data-role="page" id="locations" style="background-image:url('images/locations_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+        <div data-role="header" data-position="fixed" data-theme="comp-header">
+          <div style="float: left; width: 20%">
+                <img id="locations_logo" src="images/infiniti_logo.png" style="width:75%;padding-left:5px;padding-top:5px" /></div>
+            <div style="float: right; width: 50%">
+                <img src="images/almasaood_logo.png" style="width:100%;padding-top:10px" /></div>
+        </div>
+        <!-- /header -->
+        <div data-role="content" class="contentPad">
+            <div id="wrapper">
+                <div id="scroller">
+                    <ul id="loclist">
+                    </ul>                    
+                </div>
+            </div>
+        </div>
+         <!-- /content -->
+         <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">
+            <div data-role="navbar" data-iconpos="bottom" class="my-navbar">           
+                <ul style="list-style:none;padding:5px!important;margin-top:0px!important">
+                    <li class="ui-block-a"><a href="#home" data-transition="none"><img src="images/home_icon.png" border="0" /></a></li>
+                    <li class="ui-block-b"><a href="#newCars" data-transition="none"><img src="images/newcars_icon.png" border="0" /></a></li>
+                    <li class="ui-block-c"><a href="#campaign" data-transition="none"><img src="images/campaigns_icon.png" border="0" /></a></li>
+                    <li class="ui-block-d"><a href="#" ><img src="images/location_active_icon.png" border="0" /></a></li>
+                    <li class="ui-block-e"><a href="#services" data-transition="none"><img src="images/services_icon.png" border="0" /></a></li>
+                    <li class="ui-block-f"><a href="#feedback" data-transition="none"><img src="images/feedback_icon.png" border="0" /></a></li>
+                </ul>   
+            </div>    
+        </div>
+        <!-- /footer -->
+    </div>
+
+    <!-- End Ama Loations Page -->
+
+    <!-- Start Ama Location Details Page  -->
+
+    <div data-role="page" id="locationdetails" style="background-image:url('images/locationdetails_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+        <div data-role="header" data-position="fixed" data-theme="comp-header">
+          <div style="float: left; width: 20%">
+                <img id="locationdetails_logo" src="images/infiniti_logo.png" style="width:75%;padding-left:5px;padding-top:5px" /></div>
+            <div style="float: right; width: 50%">
+                <img src="images/almasaood_logo.png" style="width:100%;padding-top:10px" /></div>
+        </div>
+        <!-- /header -->
+        <div data-role="content" class="contentPad">
+               <table cellspacing="2" class="locTable">
+                   <tr >
+                       <td  style="width: 80%;">
+                           <b><span id="spLocTitle"></span></b>
+                       </td>
+                       <td style="width: 20%">
+                           <img id="locback" src="images/back.png" border="0" style="width:95%;cursor:pointer" />
+                       </td>
+                   </tr>
+                  <tr>
+                       <td colspan="2" style="border-top:solid 1px #9a9da1">
+                          &nbsp;
+                       </td>
+                   </tr>
+                   <tr>
+                       <td colspan="2">
+                           <span class="feature" id="spTiming" />
+                       </td>
+                   </tr>
+                   <tr>
+                       <td colspan="2">
+                           <span class="feature" id="spPhone" />
+                       </td>
+                   </tr>
+                   <tr>
+                       <td colspan="2">
+                           <span class="feature" id="spEmail" />
+                       </td>
+                   </tr>
+                   <tr>
+                       <td colspan="2">
+                           <span class="feature" id="spIncharge" />
+                       </td>
+                   </tr>   
+                   <tr>
+                       <td colspan="2">
+                          &nbsp;
+                       </td>
+                   </tr>             
+            </table>       
+        </div>
+         <!-- /content -->
+         <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">
+            <div data-role="navbar" data-iconpos="bottom" class="my-navbar">           
+                <ul style="list-style:none;padding:5px!important;margin-top:0px!important">
+                    <li class="ui-block-a"><a href="#home" data-transition="none"><img src="images/home_icon.png" border="0" /></a></li>
+                    <li class="ui-block-b"><a href="#newCars" data-transition="none"><img src="images/newcars_icon.png" border="0" /></a></li>
+                    <li class="ui-block-c"><a href="#campaign" data-transition="none"><img src="images/campaigns_icon.png" border="0" /></a></li>
+                    <li class="ui-block-d"><a href="#" ><img src="images/location_active_icon.png" border="0" /></a></li>
+                    <li class="ui-block-e"><a href="#services" data-transition="none"><img src="images/services_icon.png" border="0" /></a></li>
+                    <li class="ui-block-f"><a href="#feedback" data-transition="none"><img src="images/feedback_icon.png" border="0" /></a></li>
+                </ul>   
+            </div>    
+        </div>
+        <!-- /footer -->
+    </div>
+
+    <!-- End Ama Loations Page -->
+
+     <!--  Start Services Page  -->
+
+    <div data-role="page" id="services" style="background-image:url('images/services_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+        <div data-role="header" data-position="fixed" data-theme="comp-header">            
+           <div style="float: left; width: 20%">
+                <img id="services_logo" src="images/infiniti_logo.png" style="width:75%;padding-left:5px;padding-top:5px" /></div>
+            <div style="float: right; width: 50%">
+                <img src="images/almasaood_logo.png" style="width:100%;padding-top:10px" /></div>
+        </div>
+        <!-- /header -->
+        <div data-role="content" class="contentPad">
+            
+            
+        </div>
+         <!-- /content -->
+       <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">
+            <div data-role="navbar" data-iconpos="bottom" class="my-navbar">           
+                <ul style="list-style:none;padding:5px!important;margin-top:0px!important">
+                    <li class="ui-block-a"><a href="#home" data-transition="none"><img src="images/home_icon.png" border="0" /></a></li>
+                    <li class="ui-block-b"><a href="#newCars" data-transition="none"><img src="images/newcars_icon.png" border="0" /></a></li>
+                    <li class="ui-block-c"><a href="#campaign" data-transition="none"><img src="images/campaigns_icon.png" border="0" /></a></li>
+                    <li class="ui-block-d"><a href="#locations" data-transition="none"><img src="images/location_icon.png" border="0" /></a></li>
+                    <li class="ui-block-e"><a href="#" ><img src="images/services_active_icon.png" border="0" /></a></li>
+                    <li class="ui-block-f"><a href="#feedback" data-transition="none"><img src="images/feedback_icon.png" border="0" /></a></li>
+                </ul>   
+            </div>    
+        </div>
+        <!-- /footer -->
+    </div>
+
+    <!-- End Services Page -->
+
+     <!--  Start Feedback Page  -->
+
+    <div data-role="page" id="feedback" style="background-image:url('images/feedback_infiniti.png');background-repeat:no-repeat;background-color:Black;background-size : cover;">
+        <div data-role="header" data-position="fixed" data-theme="comp-header">
+           <div style="float: left; width: 20%">
+                <img id="feedback_logo" src="images/infiniti_logo.png" style="width:75%;padding-left:5px;padding-top:5px" /></div>
+            <div style="float: right; width: 50%">
+                <img src="images/almasaood_logo.png" style="width:100%;padding-top:10px" /></div>
+        </div>
+        <!-- /header -->
+        <div data-role="content" class="contentPad">
+            
+            
+        </div>
+         <!-- /content -->
+        <div data-role="footer" data-position="fixed" class="ui-bar-comp-footer-inner" data-id="fixfoot">
+            <div data-role="navbar" data-iconpos="bottom" class="my-navbar">           
+                <ul style="list-style:none;padding:5px!important;margin-top:0px!important">
+                    <li class="ui-block-a"><a href="#home" data-transition="none"><img src="images/home_icon.png" border="0" /></a></li>
+                    <li class="ui-block-b"><a href="#newCars" data-transition="none"><img src="images/newcars_icon.png" border="0" /></a></li>
+                    <li class="ui-block-c"><a href="#campaign" data-transition="none"><img src="images/campaigns_icon.png" border="0" /></a></li>
+                    <li class="ui-block-d"><a href="#locations" data-transition="none"><img src="images/location_icon.png" border="0" /></a></li>
+                    <li class="ui-block-e"><a href="#services" data-transition="none"><img src="images/services_icon.png" border="0" /></a></li>
+                    <li class="ui-block-f"><a href="#"><img src="images/feedback_active_icon.png" border="0" /></a></li>
+                </ul>   
+            </div>    
+        </div>
+        <!-- /footer -->
+    </div>
+
+    <!-- End Feedback Page -->
+
+    
+
+
+    </form>
+</body>
+<script type="text/javascript">
+
+    $('#home').live('pageinit', function () {
+        $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+    $('#newCars').live('pageinit', function () {
+        $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+    $('#newcardetails').live('pageinit', function () {
+        $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+
+    $('#enquiry').live('pageinit', function () {
+        $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+
+    $('#campaign').live('pageinit', function () {
+        $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+    $('#campaigndetails').live('pageinit', function () {
+        $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+
+    $('#locations').live('pageinit', function () {
+            $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+
+     $('#locations').live('pageshow', function () {
+           myScroll = new iScroll('wrapper');    
+           //alert($('#wrapper').height());
+    });
+
+
+     
+
+    $('#locationdetails').live('pageinit', function () {
+        $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+
+    $('#services').live('pageinit', function () {
+        $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+    $('#feedback').live('pageinit', function () {
+        $(".my-navbar > ul").removeClass("ui-grid-a");
+
+    });
+
+    document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+
+    /* * * * * * * *
+    *
+    * Use this for high compatibility (iDevice + Android)
+    *
+    
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(loaded, 200); alert($('#wrapper').height()); }, false);*/
+
+
+//    $(window).resize(function () {
+
+//        //alert('hi');
+
+//        myScroll.refresh();
+//        myScroll.scrollTo(0, 0, 1000);
+
+//    });
+		
+</script>
+</html>

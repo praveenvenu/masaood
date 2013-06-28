@@ -1,0 +1,43 @@
+body {
+ width: 500px;
+ margin:auto;
+ font-family: helvetica, arial;
+ font-size: 12px;
+ background: #666;
+}
+
+
+li {
+   background: #e3e3e3;
+   border: 1px solid white;
+   overflow: hidden;
+   margin-bottom: 10px;
+   padding: 15px;
+   -webkit-border-radius:12px;
+    -moz-border-radius:12px;
+    -border-radius:12px;
+}
+
+img {
+ float: left;
+ margin-right: 10px;
+ width: 30%;
+}
+
+h2 { 
+   margin-top: 0;
+   width:50%;float:left;
+   
+}
+
+h1 { color: white; }
+
+ul { padding: 0;list-style:none;  }
+
+p {width:50%;float:left;}
+
+.arrow
+{
+float:right;
+width:10%;    
+}
